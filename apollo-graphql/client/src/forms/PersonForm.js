@@ -9,11 +9,17 @@ export const PersonForm = props => {
   const [phone, setPhone] = useState('');
 
   const [addNewPerson] = useMutation(ADD_PERSON, {
-    refetchQueries: [{ query: ALL_PERSONS }],
     onError: e => {
       const errors = e.graphQLErrors[0]
       const { message } = errors;
-      props.setErrorMsg(message);
+      props.setError(message);
+    },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.concat(response.data.addNewPerson),
+        }
+      })
     }
   });
 
@@ -21,7 +27,8 @@ export const PersonForm = props => {
     e.preventDefault();
     addNewPerson({
       variables: {
-        name, street, city, phone
+        name, street, city,
+        phone: phone.length > 0 ? phone : undefined
       }
     });
     setName('');
