@@ -1,13 +1,12 @@
-import { useState , useEffect } from 'react'
-import { useMutation } from '@apollo/client'
-
-import { EDIT_NUMBER } from '../queries'
+import { useState , useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import { UPDATE_PHONE } from '../queries/queries';
 
 export const PhoneForm = ({ setError }) => {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
 
-  const [ changeNumber, result ] = useMutation(EDIT_NUMBER, {
+  const [ changeNumber, result ] = useMutation(UPDATE_PHONE, {
     onError: (error) => {
       const errors = error.graphQLErrors[0].extensions.error.errors
       const messages = Object.values(errors).map(e => e.message).join('\n')
